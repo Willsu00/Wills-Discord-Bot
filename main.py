@@ -44,6 +44,14 @@ async def spin(ctx):
     else:
         await ctx.send('You lost!')
     
+@bot.command(name='coin')
+async def coin(ctx):
+    coin = ['Heads','Tails']
+    flip = random.choice(coin)
+
+    await ctx.send(f'{ctx.author.mention}\n You got: {flip}!')
+
 
 bot.run(TOKEN)
 
+#### INVITE LINK: https://discord.com/oauth2/authorize?client_id=1236974255841873972&permissions=8&scope=bot
