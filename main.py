@@ -27,6 +27,22 @@ async def hello(ctx):
     await ctx.send(f'{ctx.author.mention} pong!')
 
 
+
+
+
+@bot.command(name='cmd')
+async def cmd(ctx):
+    embed_help = discord.Embed(
+        title='Commands',
+        description='**List of available commands:**\n\nPlay a game of slots:   `!spin`\nFlip a coin:   `!flip`',
+        color=discord.Color.blue()
+    )
+    await ctx.send(embed=embed_help)
+
+
+
+
+
 @bot.command(name='spin')
 async def spin(ctx):
     wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈']
@@ -37,32 +53,47 @@ async def spin(ctx):
     spin2 = random.choice(wheel2)
     spin3 = random.choice(wheel3)
 
-    # if spin1 == spin2 == spin3:
-    #     await ctx.send(f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆')
-    # else:
-    #     await ctx.send(f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌')
-
     if spin1 == spin2 == spin3:
         embed_slots = discord.Embed(
             title = 'Slots',
-            description = f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
-            colour=discord.Colour.red()
+            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
+            colour=discord.Colour.green()
         )
     else:
         embed_slots = discord.Embed(
             title = 'Slots',
-            description = f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌',
+            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌',
             colour=discord.Colour.red()
         )
 
     await ctx.send(embed=embed_slots)
     
-@bot.command(name='coin')
-async def coin(ctx):
+
+
+
+@bot.command(name='flip')
+async def flip(ctx):
     coin = ['Heads','Tails']
     flip = random.choice(coin)
 
-    await ctx.send(f'{ctx.author.mention}\n You got: {flip}!')
+    if flip == 'Heads':
+        embed_coin = discord.Embed(
+            title = 'Coin Flip',
+            description = f'{ctx.author.mention}\n\nYou got: **{flip}**!',
+            colour=discord.Colour.green()
+        )
+
+        embed_coin.set_image(url='https://cdn-icons-png.freepik.com/256/3364/3364839.png')
+    else:
+        embed_coin = discord.Embed(
+            title = 'Coin Flip',
+            description = f'{ctx.author.mention}\n\nYou got: **{flip}**!',
+            colour=discord.Colour.green()
+        )
+
+        embed_coin.set_image(url='https://cdn-icons-png.freepik.com/512/5448/5448175.png')
+
+    await ctx.send(embed=embed_coin)
 
 
 
