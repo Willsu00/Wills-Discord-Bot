@@ -56,6 +56,12 @@ async def spin(ctx):
     if spin1 == spin2 == spin3:
         embed_slots = discord.Embed(
             title = 'Slots',
+            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰 **JACKPOT!** 💰',
+            colour=discord.Colour.yellow()
+        )
+    elif spin2==spin3 or spin2==spin1:
+        embed_slots = discord.Embed(
+            title = 'Slots',
             description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
             colour=discord.Colour.green()
         )
