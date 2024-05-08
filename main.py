@@ -37,12 +37,25 @@ async def spin(ctx):
     spin2 = random.choice(wheel2)
     spin3 = random.choice(wheel3)
 
-    await ctx.send(f'{ctx.author.mention}\n You Spun:\n | {spin1} | {spin2} | {spin3} | ')
+    # if spin1 == spin2 == spin3:
+    #     await ctx.send(f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆')
+    # else:
+    #     await ctx.send(f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌')
 
     if spin1 == spin2 == spin3:
-        await ctx.send('You win!')
+        embed_slots = discord.Embed(
+            title = 'Slots',
+            description = f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
+            colour=discord.Colour.red()
+        )
     else:
-        await ctx.send('You lost!')
+        embed_slots = discord.Embed(
+            title = 'Slots',
+            description = f'{ctx.author.mention}\n\nYou Spun:\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌',
+            colour=discord.Colour.red()
+        )
+
+    await ctx.send(embed=embed_slots)
     
 @bot.command(name='coin')
 async def coin(ctx):
@@ -50,6 +63,8 @@ async def coin(ctx):
     flip = random.choice(coin)
 
     await ctx.send(f'{ctx.author.mention}\n You got: {flip}!')
+
+
 
 
 bot.run(TOKEN)
