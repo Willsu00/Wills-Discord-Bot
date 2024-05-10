@@ -7,7 +7,7 @@ from discord.ext.commands import BucketType, CommandOnCooldown
 from sqlite3 import Error
 from dotenv import load_dotenv
 
-bot = commands.Bot(command_prefix='?', intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 load_dotenv()
 
@@ -81,18 +81,12 @@ async def ping(ctx):
 async def commands(ctx):
     embed_help = discord.Embed(
         title='Commands',
-        description='**List of available commands:**\n\nPlay a game of slots: `!spin`\nFlip a coin: `!flip`\nRoll a dice: `!roll`',
+        description='**List of available commands:**\n\nPlay a game of slots: `!spin`\nFlip a coin: `!flip`\nRoll a dice: `!roll`\nClaim hourly points: `!claim`\nCheck your balance: `!balance`',
         color=discord.Color.blue()
     )
     await ctx.send(embed=embed_help)
 
 
-
-# Scoring System for slots (to play is 10 points):
-#
-# - If user hits jackpot, they get 200 points
-# - If user hits 2 of the same sequentially, they get 50 points
-# - If user gets nothing they lose 10 points
 
 @bot.command(name='spin')
 async def spin(ctx):
