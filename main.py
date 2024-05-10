@@ -7,7 +7,7 @@ from discord.ext.commands import BucketType, CommandOnCooldown
 from sqlite3 import Error
 from dotenv import load_dotenv
 
-bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='?', intents=discord.Intents.all())
 
 load_dotenv()
 
@@ -86,6 +86,15 @@ async def commands(ctx):
     )
     await ctx.send(embed=embed_help)
 
+
+
+@bot.command(name='uid')
+async def uid(ctx):
+    user_id = str(ctx.author.id)
+    connection = create_connection()
+    get_create_balance(connection, user_id)
+    check_balance(connection, user_id)
+    await ctx.send(f"{ctx.author.mention}'s Pokies ID: {user_id}")
 
 
 @bot.command(name='spin')
