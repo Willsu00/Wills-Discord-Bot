@@ -96,33 +96,53 @@ async def commands(ctx):
 
 @bot.command(name='spin')
 async def spin(ctx):
-    wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈']
-    wheel2 = ['🍎', '🍌', '🍒', '🍓', '🍈']
-    wheel3 = ['🍎', '🍌', '🍒', '🍓', '🍈']
-
-    spin1 = random.choice(wheel1)
-    spin2 = random.choice(wheel2)
-    spin3 = random.choice(wheel3)
-
-    if spin1 == spin2 == spin3:
-        embed_slots = discord.Embed(
-            title = 'Slots',
-            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰 **JACKPOT!** 💰',
-            colour=discord.Colour.yellow()
+    user_id = str(ctx.author.id)
+    connection = create_connection()
+    get_create_balance(connection, user_id)
+    check_balance(connection, user_id)
+    if check_balance(connection, user_id)[0] < 10:
+        embed_spinError = discord.Embed(
+            title = 'Spin Error!',
+            description = 'Sorry, you do not have enough points to spin. You need at least 10 points to play.',
+            color=discord.Color.red()
         )
-    elif spin2==spin3 or spin2==spin1:
-        embed_slots = discord.Embed(
-            title = 'Slots',
-            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
-            colour=discord.Colour.green()
-        )
+        embed_spinError.add_field(name='', value=f'{ctx.author.mention}',inline=True)
+        await ctx.send(embed=embed_spinError)
+        return
     else:
-        embed_slots = discord.Embed(
-            title = 'Slots',
-            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌',
-            colour=discord.Colour.red()
-        )
+        new_balance = check_balance(connection, user_id)[0] - 10
+        
 
+        wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈']
+        wheel2 = ['🍎', '🍌', '🍒', '🍓', '🍈']
+        wheel3 = ['🍎', '🍌', '🍒', '🍓', '🍈']
+
+        spin1 = random.choice(wheel1)
+        spin2 = random.choice(wheel2)
+        spin3 = random.choice(wheel3)
+
+        if spin1 == spin2 == spin3:
+            embed_slots = discord.Embed(
+                title = 'Slots',
+                description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰 **JACKPOT!** 💰',
+                colour=discord.Colour.yellow()
+            )
+            new_balance += 200
+        elif spin2==spin3 or spin2==spin1:
+            embed_slots = discord.Embed(
+                title = 'Slots',
+                description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
+                colour=discord.Colour.green()
+            )
+            new_balance += 50
+        else:
+            embed_slots = discord.Embed(
+                title = 'Slots',
+                description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n❌ **You Lose!** ❌',
+                colour=discord.Colour.red()
+            )
+        update_balance(connection, user_id, new_balance)
+    
     await ctx.send(embed=embed_slots)
     
 from discord.ext import commands
