@@ -97,6 +97,7 @@ async def uid(ctx):
     await ctx.send(f"{ctx.author.mention}'s Pokies ID: {user_id}")
 
 
+
 @bot.command(name='spin')
 async def spin(ctx):
     user_id = str(ctx.author.id)
@@ -184,6 +185,10 @@ async def claim_error(ctx, error):
     await ctx.send(embed=embed_claimError)
 
 
+# All in: gives users 10% chance for a double or nothing.
+
+
+
 @bot.command(name='balance')
 async def balance(ctx):
     user_id = str(ctx.author.id)
@@ -222,7 +227,6 @@ async def flip(ctx):
         embed_coin.set_image(url='https://cdn-icons-png.freepik.com/512/5448/5448175.png')
 
     await ctx.send(embed=embed_coin)
-
 
 
 @bot.command(name='roll')
