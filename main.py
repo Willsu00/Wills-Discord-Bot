@@ -81,7 +81,7 @@ async def ping(ctx):
 async def commands(ctx):
     embed_help = discord.Embed(
         title='Commands',
-        description='**List of available commands:**\n\nPlay a game of slots: `!spin`\nFlip a coin: `!flip`\nRoll a dice: `!roll`\nClaim hourly points: `!claim`\nCheck your balance: `!balance`',
+        description='**List of available commands:**\n\nPlay a game of slots: `!spin`\nFlip a coin: `!flip`\nRoll a dice: `!roll`\nClaim hourly points: `!claim`\nCheck balance: `!balance` or `!balance of @user`\nTrade points: `!trade amount [amount] @user`',
         color=discord.Color.blue()
     )
     await ctx.send(embed=embed_help)
@@ -117,9 +117,9 @@ async def spin(ctx):
         new_balance = check_balance(connection, user_id)[0] - 10
         
 
-        wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈']
-        wheel2 = ['🍎', '🍌', '🍒', '🍓', '🍈']
-        wheel3 = ['🍎', '🍌', '🍒', '🍓', '🍈']
+        wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍒', '🍓', '🍈', '🍓', '🍈']
+        wheel2 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍎', '🍌',]
+        wheel3 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍌', '🍒', '🍓','🍌', '🍒', '🍓']
 
         spin1 = random.choice(wheel1)
         spin2 = random.choice(wheel2)
@@ -138,7 +138,7 @@ async def spin(ctx):
                 description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n🏆 **You Win!** 🏆',
                 colour=discord.Colour.green()
             )
-            new_balance += 50
+            new_balance += 30
         else:
             embed_slots = discord.Embed(
                 title = 'Slots',
@@ -187,9 +187,44 @@ async def claim_error(ctx, error):
 
 # All in: gives users 10% chance for a double or nothing.
 
+@bot.group(invoke_without_command=True)
+async def trade(ctx):
+    embed_trade = discord.Embed(
+        title='Trade',
+        description='Trade using `!trade [amount] @user` command'
+    )
+    await ctx.send(embed=embed_trade)
+
+@trade.command(name='amount')
+async def trade_user(ctx, amount: int, user: discord.Member):
+    sender_id = str(ctx.author.id)
+    receiver_id = str(user.id)
+    connection = create_connection()
+    sender_balance = check_balance(connection, sender_id)
+    receiver_balance = check_balance(connection, receiver_id)
+    if sender_balance is None or sender_balance[0] < amount:
+        embed_tradeError = discord.Embed(
+            title='Trade Error',
+            description=f'{ctx.author.mention}, you do not have enough points to trade.',
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed_tradeError)
+        return
+    else:
+        update_balance(connection, sender_id, sender_balance[0] - amount)
+        update_balance(connection, receiver_id, receiver_balance[0] + amount)
+
+        embed_tradeSuccess = discord.Embed(
+            title='Trade',
+            description=f'{ctx.author.mention} traded {amount} points to {user.mention}.',
+            color=discord.Color.green()
+        )
+        await ctx.send(embed=embed_tradeSuccess)
 
 
-@bot.command(name='balance')
+
+
+@bot.group(invoke_without_command=True)
 async def balance(ctx):
     user_id = str(ctx.author.id)
     connection = create_connection()
@@ -202,6 +237,22 @@ async def balance(ctx):
         color=discord.Color.teal()
     )
     await ctx.send(embed=embed_balance)
+
+@balance.command(name='of')
+async def balance_user(ctx, user: discord.Member):
+    user_id = str(user.id)
+    connection = create_connection()
+    balance = check_balance(connection, user_id)
+    if balance is None:
+        balance = [0]
+    embed_balance = discord.Embed(
+        title='Balance',
+        description=f"{user}'s balance is {balance[0]}.",
+        color=discord.Color.teal()
+    )
+    await ctx.send(embed=embed_balance)
+
+
 
 
 @bot.command(name='flip')
