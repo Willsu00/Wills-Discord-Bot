@@ -88,13 +88,21 @@ async def commands(ctx):
 
 
 
-@bot.command(name='uid')
+@bot.group(invoke_without_command=True)
 async def uid(ctx):
     user_id = str(ctx.author.id)
     connection = create_connection()
     get_create_balance(connection, user_id)
     check_balance(connection, user_id)
     await ctx.send(f"{ctx.author.mention}'s Pokies ID: {user_id}")
+
+@uid.command(name='of')
+async def uid_user(ctx, user: discord.Member):
+    user_id = str(user.id)
+    connection = create_connection()
+    get_create_balance(connection, user_id)
+    check_balance(connection, user_id)
+    await ctx.send(f"{user}'s Pokies ID: {user_id}")
 
 
 
