@@ -13,7 +13,7 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-
+bot_version = 0.1
 
 def create_connection():
     connection = None;
@@ -215,8 +215,27 @@ async def trade(ctx):
 
 @trade.command(name='amount')
 async def trade_user(ctx, amount: int, user: discord.Member):
+    if amount <= 0:
+        embed_tradeError = discord.Embed(
+            title='Trade Error',
+            description=f'{ctx.author.mention}, you cannot trade a negative or zero amount of points.',
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed_tradeError)
+        return
+
     sender_id = str(ctx.author.id)
     receiver_id = str(user.id)
+    
+    if sender_id == receiver_id:
+        embed_tradeError = discord.Embed(
+            title='Trade Error',
+            description=f'{ctx.author.mention}, you cannot trade with yourself.',
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed_tradeError)
+        return
+    
     connection = create_connection()
     sender_balance = check_balance(connection, sender_id)
     receiver_balance = check_balance(connection, receiver_id)
@@ -238,7 +257,6 @@ async def trade_user(ctx, amount: int, user: discord.Member):
             color=discord.Color.green()
         )
         await ctx.send(embed=embed_tradeSuccess)
-
 
 
 
@@ -314,6 +332,4 @@ async def roll(ctx):
 
 bot.run(TOKEN)
 
-#### INVITE LINK: https://discord.com/oauth2/authorize?client_id=1236974255841873972&permissions=8&scope=bot
 
-#### TEST BOT INVITE LINK: https://discord.com/oauth2/authorize?client_id=1238094937992462337&permissions=8&scope=bot
