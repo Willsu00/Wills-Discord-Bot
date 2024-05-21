@@ -1,0 +1,3 @@
+#### INVITE LINK: https://discord.com/oauth2/authorize?client_id=1236974255841873972&permissions=8&scope=bot
+
+#### TEST BOT INVITE LINK: https://discord.com/oauth2/authorize?client_id=1238094937992462337&permissions=8&scope=bot
