@@ -125,19 +125,27 @@ async def spin(ctx):
         new_balance = check_balance(connection, user_id)[0] - 10
         
 
-        wheel1 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍒', '🍓', '🍈', '🍓', '🍈']
-        wheel2 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍎', '🍌',]
-        wheel3 = ['🍎', '🍌', '🍒', '🍓', '🍈','🍌', '🍒', '🍓','🍌', '🍒', '🍓']
+        wheel1 = ['🍎', '🍒', '🍓', '🍈'] * 10 + ['🍌'] * 6 + ['🤑'] * 3
+        wheel2 = ['🍎', '🍌', '🍒', '🍈'] * 4 + ['🍓'] * 4 + ['🤑'] * 3
+        wheel3 = ['🍎', '🍌', '🍒', '🍓'] * 20 + ['🍈'] * 10 + ['🤑'] * 3
 
         spin1 = random.choice(wheel1)
         spin2 = random.choice(wheel2)
         spin3 = random.choice(wheel3)
 
-        if spin1 == spin2 == spin3:
+        if spin1=='🤑' and spin2 == '🤑' and spin3 =='🤑':
             embed_slots = discord.Embed(
                 title = 'Slots',
-                description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰 **JACKPOT!** 💰',
+                description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰💴💰 **MEGA JACKPOT!** 💰💴💰',
                 colour=discord.Colour.yellow()
+            )
+            new_balance += 1000
+
+        elif spin1 == spin2 == spin3:
+            embed_slots = discord.Embed(
+            title = 'Slots',
+            description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰 **JACKPOT!** 💰',
+            colour=discord.Colour.yellow()
             )
             new_balance += 200
         elif spin2==spin3 or spin2==spin1:
