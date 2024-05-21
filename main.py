@@ -139,7 +139,7 @@ async def spin(ctx):
                 description = f'{ctx.author.mention}\n\n**You Spun:**\n\n| {spin1} | {spin2} | {spin3} |\n\n💰💴💰 **MEGA JACKPOT!** 💰💴💰',
                 colour=discord.Colour.yellow()
             )
-            new_balance += 1000
+            new_balance += 1000000
 
         elif spin1 == spin2 == spin3:
             embed_slots = discord.Embed(
