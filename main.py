@@ -156,11 +156,12 @@ async def spin(ctx):
         update_balance(connection, user_id, new_balance)
     
     await ctx.send(embed=embed_slots)
-    
+
+
 from discord.ext import commands
 
 @bot.command(name='claim')
-@commands.cooldown(1, 3600, BucketType.user)
+@commands.cooldown(1, 86400, BucketType.user)
 async def claim(ctx):
     user_id = str(ctx.author.id)
     connection = create_connection()
@@ -168,11 +169,11 @@ async def claim(ctx):
     balance = check_balance(connection, user_id)
     if balance is None:
         balance = [0]
-    new_balance = balance[0] + 100
+    new_balance = balance[0] + 200
     update_balance(connection, user_id, new_balance)
     embed_claim = discord.Embed(
         title='Claim',
-        description=f"{ctx.author.mention} claimed 100 points! Your new balance is {new_balance}.",
+        description=f"{ctx.author.mention} claimed 200 points! Your new balance is {new_balance}.",
         color=discord.Color.green()
     )
 
@@ -182,12 +183,13 @@ async def claim(ctx):
 async def claim_error(ctx, error):
     if isinstance(error, CommandOnCooldown):
         embed_claimError = discord.Embed(
-            title = 'Claim Error!',
-            description = 'Sorry, you can only claim your points once per hour. Please try again in **{:.0f}s.**'.format(error.retry_after),
+            title='Claim Error!',
+            description='Sorry, you can only claim your points once every 24 hours. Please try again in **{:.0f} hours.**'.format(
+                error.retry_after / 3600),
             color=discord.Color.red()
         )
 
-        embed_claimError.add_field(name='', value=f'{ctx.author.mention}',inline=True)
+        embed_claimError.add_field(name='', value=f'{ctx.author.mention}', inline=True)
     else:
         raise error
     await ctx.send(embed=embed_claimError)
