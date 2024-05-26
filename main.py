@@ -11,6 +11,8 @@ bot = commands.Bot(command_prefix='?', intents=discord.Intents.all())
 
 load_dotenv()
 
+
+#insert uid here:
 ban_list=[]
 
 TOKEN = os.getenv('DISCORD_TOKEN')
