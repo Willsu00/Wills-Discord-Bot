@@ -11,6 +11,10 @@ bot = commands.Bot(command_prefix='?', intents=discord.Intents.all())
 
 load_dotenv()
 
+
+#insert uid here:
+ban_list=[]
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot_version = 0.2
@@ -120,6 +124,14 @@ async def spin(ctx):
         )
         embed_spinError.add_field(name='', value=f'{ctx.author.mention}',inline=True)
         await ctx.send(embed=embed_spinError)
+        return
+    elif user_id in ban_list:
+        embed_slotsBan = discord.Embed(
+            title = 'Slots Ban',
+            description = f'{ctx.author.mention}, you have been banned from playing slots.',
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed_slotsBan)
         return
     else:
         new_balance = check_balance(connection, user_id)[0] - 10
@@ -242,7 +254,7 @@ async def allin(ctx):
 async def trade(ctx):
     embed_trade = discord.Embed(
         title='Trade',
-        description='Trade using `!trade [amount] @user` command'
+        description='Trade using `!trade amount [amount] @user` command'
     )
     await ctx.send(embed=embed_trade)
 
