@@ -13,7 +13,7 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot_version = 0.1
+bot_version = 0.2
 
 def create_connection():
     connection = None;
@@ -72,19 +72,19 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@bot.command(name='ping')
+@bot.slash_command(name='ping', description='check bot status')
 async def ping(ctx):
-    await ctx.send(f'{bot.user.name} is online! {round(bot.latency * 1000)}ms')
+    await ctx.respond(f'{bot.user.name} is online! {round(bot.latency * 1000)}ms')
 
 
-@bot.command(name='commands')
-async def commands(ctx):
+@bot.slash_command(name='commands', description='List of available commands')
+async def command(ctx):
     embed_help = discord.Embed(
         title='Commands',
         description='**List of available commands:**\n\nPlay a game of slots: `!spin`\nFlip a coin: `!flip`\nRoll a dice: `!roll`\nClaim hourly points: `!claim`\nCheck balance: `!balance` or `!balance of @user`\nTrade points: `!trade amount [amount] @user`',
         color=discord.Color.blue()
     )
-    await ctx.send(embed=embed_help)
+    await ctx.respond(embed=embed_help)
 
 
 
@@ -203,7 +203,40 @@ async def claim_error(ctx, error):
     await ctx.send(embed=embed_claimError)
 
 
-# All in: gives users 10% chance for a double or nothing.
+@bot.command(name='allin')
+async def allin(ctx):
+    user_id = str(ctx.author.id)
+    connection = create_connection()
+    get_create_balance(connection, user_id)
+    if check_balance(connection, user_id)[0] == 0:
+        embed_allinError = discord.Embed(
+            title='All In',
+            description="You don't have enough points to go all in!"
+        )
+        await ctx.send(embed=embed_allinError)
+        return
+    new_balance = check_balance(connection, user_id)[0] - 10
+    rand_int = random.randint(1, 50)
+    if rand_int <= 10:
+        new_balance = check_balance(connection, user_id)[0] * 2
+        embed_allin = discord.Embed(
+            title='All In',
+            description=f"{ctx.author.mention} You're feeling lucky! You go for a double or nothing!\n\nYou won! Contratulations!",
+            color=discord.Color.yellow()
+        )
+        print(rand_int)
+
+    else:
+        new_balance = 0
+        embed_allin = discord.Embed(
+            title='All In',
+            description=f"{ctx.author.mention} You're feeling lucky! You go for a double or nothing!\n\nYou lost to the house! Better luck next time!",
+            color=discord.Color.red()
+        )
+        print(rand_int)
+    update_balance(connection, user_id, new_balance)
+    await ctx.send(embed=embed_allin)
+
 
 @bot.group(invoke_without_command=True)
 async def trade(ctx):
